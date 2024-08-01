@@ -1,0 +1,42 @@
+#include <ESP8266WiFi.h>
+#include <WiFiUdp.h>
+#include <DHT.h>
+#define DHTPIN D4
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+float temp;
+char packet[1024];
+const char* ssid = "SYS123";
+const char* password ="12345678";
+const char* udpServerIP = "192.168.137.1";
+unsigned int port = 5129;
+WiFiUDP Udp; 
+void setup()
+{
+Serial.begin(9600);
+dht.begin();
+WiFi.begin(ssid, password);
+while (WiFi.status() != WL_CONNECTED)
+{ delay(500);
+Serial.println("Connecting to WiFi...");
+}
+Serial.println("Wifi connected successfully");
+}
+void loop()
+{ Udp.beginPacket(udpServerIP, port);
+temp = dht.readTemperature();
+Serial.print("Temperature in degree Cel. :");
+Serial.println(temp);
+String tempStr = String(temp);
+tempStr.toCharArray(packet, 1024);
+Udp.write(packet);
+Udp.endPacket();
+delay(500);
+}
+UDP_IP = "192.168.137.1"
+UDP_PORT = 5129
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((UDP_IP, UDP_PORT))
+while True:
+received_data, addr = sock.recvfrom(1024)
+print(received_data)
